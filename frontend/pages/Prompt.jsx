@@ -48,6 +48,7 @@ export default function ProjectPrompt({ onGenerate }) {
 
         const result = await response.json();
         setResponseData(result);
+        console.log("Workflow data:", result);
       } catch (error) {
         console.error("Error:", error);
       } finally {
@@ -161,7 +162,7 @@ export default function ProjectPrompt({ onGenerate }) {
       </div>
       {/* Display response data for debugging */}
       {responseData && (
-        <div style={{ width: "100vw", height: "100vh" }}>
+        <div className='w-screen h-screen flex flex-row '>
           <AutoFlow initialEdges={responseData.edges} initialNodes={responseData.nodes} />
         </div>
       )}

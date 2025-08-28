@@ -1,7 +1,7 @@
 import React from 'react';
 import { Panel, useReactFlow, getNodesBounds, getViewportForBounds } from '@xyflow/react';
 import { toPng } from 'html-to-image';
-
+import { FaCloudDownloadAlt } from 'react-icons/fa';
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
 
@@ -35,10 +35,12 @@ function DownloadButton() {
   };
 
   return (
-    
-      <button className="download-btn xy-theme__button" onClick={onClick}>
-        Download Image
+
+
+      <button className="download-btn text-[#e40b7f]"  onClick={onClick}>
+        <FaCloudDownloadAlt className="mr-2" size={28} />
       </button>
+
 
   );
 }

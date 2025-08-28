@@ -15,11 +15,13 @@ import dagre from "@dagrejs/dagre";
 import PhaseNode from './PhaseNode';
 import ExpandableNode from "./Expandable";
 import WorkflowNode from "./WorkflowNode";
+import { BiSolidObjectsVerticalTop, BiSolidObjectsHorizontalLeft, BiSolidObjectsHorizontalRight, BiSolidObjectsVerticalBottom } from 'react-icons/bi';
+import { SiApacheairflow } from 'react-icons/si';
 const nodeTypes = { phase: PhaseNode, expandable: ExpandableNode, workflow: WorkflowNode };
 import "@xyflow/react/dist/style.css";
 import './xy-theme.css';
 import DownloadButton from "./DownloadButton";
-import SaveButton  from "./SaveButton";
+import SaveButton from "./SaveButton";
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const getLayoutedElements = (nodes, edges, nodeSizes, direction = "TB") => {
@@ -53,7 +55,7 @@ const getLayoutedElements = (nodes, edges, nodeSizes, direction = "TB") => {
   return { nodes: newNodes, edges };
 };
 
-const AutoFlow = ({initialEdges, initialNodes}) => {
+const AutoFlow = ({ initialEdges, initialNodes }) => {
   const [nodeSizes, setNodeSizes] = useState({});
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -89,7 +91,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
       // Fit view after initial layout
       setTimeout(() => {
         if (reactFlowInstance.current) {
-          reactFlowInstance.current.fitView({ duration: 800, padding: 0.25 });
+          reactFlowInstance.current.fitView({ duration: 800, padding: 0.15 });
         }
       }, 100);
     }
@@ -117,7 +119,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
       // Fit view after layout change
       setTimeout(() => {
         if (reactFlowInstance.current) {
-          reactFlowInstance.current.fitView({ duration: 800, padding: 0.25 });
+          reactFlowInstance.current.fitView({ duration: 800, padding: 0.15 });
         }
       }, 100);
     },
@@ -163,30 +165,74 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
   }, []);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      onInit={onInit}
-      nodeTypes={nodeTypes}
-      defaultEdgeOptions={{
-        style: {
-          stroke: '#cc6be4', // Your edge color
-          strokeWidth: 2,
-        },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: '#cc6be4',
-        },
-      }}
-      connectionLineType={ConnectionLineType.SmoothStep}
-      fitView={!hasInitialLayout.current} // Let ReactFlow handle initial fitView
-      colorMode="dark"
-    >
-      <Panel position="top-left" className="xy-theme__panel">
-        <form style={{
+    <>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onInit={onInit}
+        nodeTypes={nodeTypes}
+        defaultEdgeOptions={{
+          style: {
+            stroke: '#cc6be4', // Your edge color
+            strokeWidth: 2,
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#cc6be4',
+          },
+        }}
+        connectionLineType={ConnectionLineType.SmoothStep}
+        fitView={!hasInitialLayout.current} // Let ReactFlow handle initial fitView
+        colorMode="dark"
+      >
+        <Panel position='top-left' className="flex gap-2 justify-center items-center">
+          <DownloadButton />
+          <SaveButton />
+        </Panel>
+        <Panel position="top-right" className="xy-theme__panel">
+          <button className="download-btn text-[#e40b7f]">
+            <SiApacheairflow className="mr-2 hover:animate-spin " size={28} />
+          </button>
+        </Panel>
+        <Background style={{ backgroundColor: '#000000ff' }} />
+        <MiniMap
+          className="xy-theme__minimap"
+          style={{
+            backgroundColor: '#0c0c0c',
+            border: '1px solid #333c4d',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+          }}
+          nodeColor={(node) => {
+            // Apply different colors based on node type
+            if (node.type === 'workflow') return '#e40b7f';
+            if (node.data?.label?.toLowerCase() === 'planning') return '#e40b7f';
+            if (node.data?.label?.toLowerCase() === 'design') return '#6b8cff';
+            if (node.data?.label?.toLowerCase() === 'implementation') return '#4cd964';
+            if (node.data?.label?.toLowerCase() === 'testing') return '#ffcc00';
+            if (node.data?.label?.toLowerCase() === 'deployment') return '#ff9500';
+            if (node.data?.label?.toLowerCase() === 'maintenance') return '#5ac8fa';
+            return '#333c4d'; // Default color
+          }}
+          nodeStrokeColor={(node) => {
+            const color = node.type === 'workflow' ? '#cc6be4' : '#848c94';
+            return node.selected ? '#e40b7f' : color;
+          }}
+          nodeBorderRadius={4}
+          maskColor="rgba(228, 11, 127, 0.2)"
+          maskStrokeColor="#e40b7f"
+          maskStrokeWidth={2}
+          position="bottom-right"
+        />
+        <Controls />
+      </ReactFlow>
+    <div className="z-10 flex flex-col gap-2 w-[320px] p-3 bg-black border-s-4 border-[#333c4d]">
+        {/* add node form */}
+        <div className="text-lg text-[#dededf] mt-3 ml-1">Add a Node :</div>
+        <form className="mb-5" style={{
           border: "1px solid #333c4d",
           padding: "12px",
           borderRadius: "8px",
@@ -228,7 +274,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
             outline: "none",
             transition: "border-color 0.2s ease"
           }}
-           onFocus={(e) => {
+            onFocus={(e) => {
               e.target.style.borderColor = "#cc6be4";
               e.target.style.boxShadow = "0 0 0 2px rgba(204, 107, 228, 0.2)";
             }}
@@ -236,7 +282,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
               e.target.style.borderColor = "#333c4d";
               e.target.style.boxShadow = "none";
             }}
-             name="node-details" id="node-details" placeholder="Enter node details"></textarea>
+            name="node-details" id="node-details" placeholder="Enter node details"></textarea>
           <button
             style={{
               marginBottom: "4px",
@@ -268,52 +314,58 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
             onClick={handleAddNode}
             type="button"
           >
-            Add Node
+            Add 
           </button>
         </form>
-      </Panel>
-      <Panel position="top-right" className="xy-theme__panel">
-        <button className="xy-theme__button" onClick={() => onLayout("TB")}>
-          vertical layout
-        </button>
-        <button className="xy-theme__button" onClick={() => onLayout("LR")}>
-          horizontal layout
-        </button>
-        <DownloadButton />
-        <SaveButton />
-      </Panel>
-      <Background style={{ backgroundColor: '#000000ff' }} />
-      <MiniMap
-        className="xy-theme__minimap"
-        style={{
-          backgroundColor: '#0c0c0c',
-          border: '1px solid #333c4d',
-          borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-        }}
-        nodeColor={(node) => {
-          // Apply different colors based on node type
-          if (node.type === 'workflow') return '#e40b7f';
-          if (node.data?.label?.toLowerCase() === 'planning') return '#e40b7f';
-          if (node.data?.label?.toLowerCase() === 'design') return '#6b8cff';
-          if (node.data?.label?.toLowerCase() === 'implementation') return '#4cd964';
-          if (node.data?.label?.toLowerCase() === 'testing') return '#ffcc00';
-          if (node.data?.label?.toLowerCase() === 'deployment') return '#ff9500';
-          if (node.data?.label?.toLowerCase() === 'maintenance') return '#5ac8fa';
-          return '#333c4d'; // Default color
-        }}
-        nodeStrokeColor={(node) => {
-          const color = node.type === 'workflow' ? '#cc6be4' : '#848c94';
-          return node.selected ? '#e40b7f' : color;
-        }}
-        nodeBorderRadius={4}
-        maskColor="rgba(228, 11, 127, 0.2)"
-        maskStrokeColor="#e40b7f"
-        maskStrokeWidth={2}
-        position="bottom-right"
-      />
-      <Controls />
-    </ReactFlow>
+        <div className="mb-5"> 
+         
+           <div className="text-lg text-[#dededf] ml-1 mb-3">Layout :</div>
+          <div className="flex justify-center gap-2">
+            {/* top to bottom layout */}
+            <button className="xy-theme__button flex justify-center items-center"  onClick={() => onLayout("TB")}>
+              <BiSolidObjectsVerticalTop className="mr-2" size={20} />
+            </button>
+            {/* left to right layout */}
+            <button className="xy-theme__button flex justify-center items-center" onClick={() => onLayout("LR")}>
+              <BiSolidObjectsHorizontalLeft className="mr-2" size={20} />
+            </button>
+            {/* right to left layout */}
+            <button className="xy-theme__button flex justify-center items-center" onClick={() => onLayout("RL")}>
+              <BiSolidObjectsHorizontalRight className="mr-2" size={20} />
+            </button>
+            {/* bottom to top layout */}
+            <button className="xy-theme__button flex justify-center items-center" onClick={() => onLayout("BT")}>
+              <BiSolidObjectsVerticalBottom className="mr-2" size={20} />
+            </button>
+          </div>
+        </div>
+        {/* phase flow */}
+        <div className="mb-5">
+        <div className="text-lg text-[#dededf] mb-3 ml-1">Phase Flow :</div>
+        <div className="grid grid-cols-2 gap-4">
+
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Planning
+          </button>
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Design
+          </button>
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Implementation
+          </button>
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Testing
+          </button>
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Deployment
+          </button>
+          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            Maintenance
+          </button>
+        </div>
+        </div>
+      </div>
+    </>
   );
 };
 
