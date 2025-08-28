@@ -6,7 +6,7 @@ const people = [
   {
     id: 1,
     name: "Samman Varshney",
-    designation: "Founder & CEO",
+    designation: "Backend Engineer",
     image: "/images/samman.jpg", 
   },
   {
@@ -18,7 +18,7 @@ const people = [
   {
     id: 3,
     name: "Yash Bansal",
-    designation: "Backend Developer",
+    designation: "Testing Engineer",
     image: "/images/yash.jpg",
   },
   {
