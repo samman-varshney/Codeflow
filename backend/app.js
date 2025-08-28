@@ -10,7 +10,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 const { createWorkflow } = require('./controllers/workflowController');
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://codeflow-one.vercel.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
