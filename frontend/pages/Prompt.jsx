@@ -31,16 +31,19 @@ export default function ProjectPrompt({ onGenerate }) {
 
 
   const handleGenerate = async () => {
-    if(idea){
-      setLoading(true);
-      try{
-        const response = await fetch("http://localhost:3000/api/generate/workflow", {
+  if (idea) {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/generate/workflow`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ userPrompt: idea }),
-        });
+        }
+      );
 
       const result = await response.json();
       setResponseData(result);
@@ -49,8 +52,9 @@ export default function ProjectPrompt({ onGenerate }) {
     } finally {
       setLoading(false);
     }
-    }
-  };
+  }
+};
+
 
   const options = [
     {
