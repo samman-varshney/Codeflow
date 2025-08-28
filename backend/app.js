@@ -10,7 +10,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 const { createWorkflow } = require('./controllers/workflowController');
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -31,6 +31,7 @@ app.post('/api/query', async (req, res) => {
 
 app.post('/api/generate/workflow', createWorkflow);
 
-app.listen(3000, () => {
-    console.log('serving at http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`serving at http://localhost:${PORT}`);
 })      

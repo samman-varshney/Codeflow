@@ -18,7 +18,7 @@ export default function ProjectPrompt({ onGenerate }) {
         navigate("/");
       }
     };
-    
+
     window.addEventListener("popstate", handleRouteChange);
     return () => window.removeEventListener("popstate", handleRouteChange);
   }, [navigate]);
@@ -31,29 +31,30 @@ export default function ProjectPrompt({ onGenerate }) {
 
 
   const handleGenerate = async () => {
-  if (idea) {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/generate/workflow`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userPrompt: idea }),
-        }
-      );
+    if (idea) {
+      setLoading(true);
+      try {
+        // import.meta.env.VITE_API_BASE_URL
+        const response = await fetch(
+          `${'http://localhost:3000'}/api/generate/workflow`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userPrompt: idea }),
+          }
+        );
 
-      const result = await response.json();
-      setResponseData(result);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
+        const result = await response.json();
+        setResponseData(result);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-};
+  };
 
 
   const options = [
@@ -119,11 +120,10 @@ export default function ProjectPrompt({ onGenerate }) {
                 <div
                   key={opt.id}
                   onClick={() => toggleOption(opt.id)}
-                  className={`option-card p-3 sm:p-4 rounded-lg flex items-center justify-between cursor-pointer border transition-all duration-300 ${
-                    selected.includes(opt.id)
+                  className={`option-card p-3 sm:p-4 rounded-lg flex items-center justify-between cursor-pointer border transition-all duration-300 ${selected.includes(opt.id)
                       ? "bg-purple-900/30 border-purple-500"
                       : "bg-white/5 border-gray-700 hover:bg-purple-900/20 hover:border-purple-500"
-                  }`}
+                    }`}
                 >
                   <div className="pr-2 sm:pr-3">
                     <h3 className="font-semibold text-white text-sm sm:text-base">
@@ -132,11 +132,10 @@ export default function ProjectPrompt({ onGenerate }) {
                     <p className="text-xs sm:text-sm text-gray-400">{opt.desc}</p>
                   </div>
                   <div
-                    className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-md border transition-all duration-300 ${
-                      selected.includes(opt.id)
+                    className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-md border transition-all duration-300 ${selected.includes(opt.id)
                         ? "border-purple-500 bg-purple-500"
                         : "border-gray-600"
-                    }`}
+                      }`}
                   >
                     {selected.includes(opt.id) && (
                       <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-sm" />
@@ -151,9 +150,8 @@ export default function ProjectPrompt({ onGenerate }) {
               <button
                 onClick={handleGenerate}
                 disabled={!idea.trim()}
-                className={`generate-button w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 to-purple-400 shadow-[0_3px_12px_rgba(138,43,226,0.4)] transition-all duration-300 ${
-                  !idea.trim() ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(138,43,226,0.6)]"
-                }`}
+                className={`generate-button w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 to-purple-400 shadow-[0_3px_12px_rgba(138,43,226,0.4)] transition-all duration-300 ${!idea.trim() ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(138,43,226,0.6)]"
+                  }`}
               >
                 {loading ? "Generating..." : "Generate Plan"}
               </button>

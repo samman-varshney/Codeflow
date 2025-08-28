@@ -17,7 +17,7 @@ import ExpandableNode from "./Expandable";
 import WorkflowNode from "./WorkflowNode";
 const nodeTypes = { phase: PhaseNode, expandable: ExpandableNode, workflow: WorkflowNode };
 import "@xyflow/react/dist/style.css";
-
+import './xy-theme.css';
 import DownloadButton from "./DownloadButton";
 import SaveButton  from "./SaveButton";
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
@@ -89,7 +89,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
       // Fit view after initial layout
       setTimeout(() => {
         if (reactFlowInstance.current) {
-          reactFlowInstance.current.fitView({ duration: 800, padding: 0.1 });
+          reactFlowInstance.current.fitView({ duration: 800, padding: 0.25 });
         }
       }, 100);
     }
@@ -117,7 +117,7 @@ const AutoFlow = ({initialEdges, initialNodes}) => {
       // Fit view after layout change
       setTimeout(() => {
         if (reactFlowInstance.current) {
-          reactFlowInstance.current.fitView({ duration: 800, padding: 0.1 });
+          reactFlowInstance.current.fitView({ duration: 800, padding: 0.25 });
         }
       }, 100);
     },
