@@ -99,7 +99,7 @@ const ExpandableNode = ({ data }) => {
             ×
           </button>
           
-          <h2 className="text-xl font-bold mb-4 text-[#e40b7f]">{data.stage}</h2>
+          <h2 className="text-xl font-bold mb-4 text-[#e40b7f]">{data.label}</h2>
           
           {/* Details Section */}
           {data.details && (
