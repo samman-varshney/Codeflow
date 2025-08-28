@@ -57,10 +57,17 @@ const getLayoutedElements = (nodes, edges, nodeSizes, direction = "TB") => {
 
 const AutoFlow = ({ initialEdges, initialNodes }) => {
   const [nodeSizes, setNodeSizes] = useState({});
+  // const [phase, setPhase] = useState(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [phase, setPhase] = useState(null);
   const reactFlowInstance = useRef(null);
   const hasInitialLayout = useRef(false);
+  
+
+  // Keep a copy of all nodes/edges
+  const allNodes = useRef(initialNodes);
+  const allEdges = useRef(initialEdges);
 
   // 1️⃣ measure node sizes only once, when DOM is ready
   useEffect(() => {
@@ -97,13 +104,19 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
     }
   }, [nodeSizes]); // 👈 only when nodeSizes is set
 
-  const onConnect = useCallback(
-    (params) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: ConnectionLineType.SmoothStep, animated: true }, eds)
-      ),
-    []
-  );
+const onConnect = useCallback(
+  (params) => {
+    const newEdge = { ...params, type: ConnectionLineType.SmoothStep, animated: true };
+    setEdges((eds) => {
+      const newEdges = addEdge(newEdge, eds);
+      allEdges.current = newEdges; // Update the ref
+      return newEdges;
+    });
+  },
+  []
+);
+
+
 
   const onLayout = useCallback(
     (direction) => {
@@ -127,6 +140,7 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
   );
   const handleAddNode = (e) => {
     const label = document.getElementById('node-label').value.trim();
+    const phase = document.getElementById('node-phase').value.trim();
     const details = document.getElementById('node-details').value.trim();
     if (label) {
       const newNode = {
@@ -137,7 +151,8 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
           details: details,
           tools: [],
           design: [],
-          features: []
+          features: [],
+          phase: phase
         },
         position: {
           x: Math.random() * 400, // Random position instead of (0,0)
@@ -152,17 +167,63 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
           border: '2px solid #e40b7f',
         }
       };
-
-      setNodes([...nodes, newNode]);
+      const newNodes = [...nodes, newNode];
+      setNodes(newNodes);
+      allNodes.current = newNodes;
 
       // Clear the input field after adding
       document.getElementById('node-label').value = '';
+      document.getElementById('node-phase').value = '';
       document.getElementById('node-details').value = '';
     }
   };
   const onInit = useCallback((instance) => {
     reactFlowInstance.current = instance;
   }, []);
+  useEffect(() => {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+      nodes,
+      edges,
+      nodeSizes,
+        "TB"
+      );
+      setNodes([...layoutedNodes]);
+      setEdges([...layoutedEdges]);
+console.log('Layout complete:', { layoutedNodes, layoutedEdges });
+      // Fit view after layout change
+      setTimeout(() => {
+        if (reactFlowInstance.current) {
+          reactFlowInstance.current.fitView({ duration: 800, padding: 0.15 });
+        }
+      }, 100);
+    },
+    [phase]
+  );
+  const handlePhaseFlow = useCallback((phase) => {
+  console.log(`Phase flow for: ${phase}`);
+  
+  let phaseNodes = [];
+  let phaseEdges = [];
+  
+  if(!phase) {
+    phaseNodes = allNodes.current;
+    phaseEdges = allEdges.current;
+  } else {
+    phaseNodes = allNodes.current.filter((node) => node.phase === phase);
+    phaseEdges = allEdges.current.filter((edge) => edge.phase === phase);
+  }
+  
+  console.log('nodes and edges are set');
+  console.log('phaseNodes:', phaseNodes);
+  console.log('phaseEdges:', phaseEdges);
+  
+  // First update the nodes and edges
+  setNodes(phaseNodes);
+  setEdges(phaseEdges);
+  
+  // Then apply the layout after a short delay to ensure state is updated
+  setPhase(phase);
+}, [phase]);
 
   return (
     <>
@@ -192,8 +253,8 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
           <DownloadButton />
           <SaveButton />
         </Panel>
-        <Panel position="top-right" className="xy-theme__panel">
-          <button className="download-btn text-[#e40b7f]">
+        <Panel position="top-right" className="xy-theme__panel" >
+          <button className="download-btn text-[#e40b7f]" onClick={()=>{if(phase) handlePhaseFlow(null)}}>
             <SiApacheairflow className="mr-2 hover:animate-spin " size={28} />
           </button>
         </Panel>
@@ -263,6 +324,29 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
             id="node-label"
             type="text"
             placeholder='Enter node name'
+          />
+          <input
+            style={{
+              marginBottom: "8px",
+              border: "1px solid #333c4d",
+              padding: "8px",
+              borderRadius: "4px",
+              color: "#dededf",
+              backgroundColor: "#0c0c0c",
+              outline: "none",
+              transition: "border-color 0.2s ease"
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#cc6be4";
+              e.target.style.boxShadow = "0 0 0 2px rgba(204, 107, 228, 0.2)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#333c4d";
+              e.target.style.boxShadow = "none";
+            }}
+            id="node-phase"
+            type="text"
+            placeholder='Enter node phase'
           />
           <textarea style={{
             marginBottom: "8px",
@@ -344,22 +428,22 @@ const AutoFlow = ({ initialEdges, initialNodes }) => {
         <div className="text-lg text-[#dededf] mb-3 ml-1">Phase Flow :</div>
         <div className="grid grid-cols-2 gap-4">
 
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="planning") handlePhaseFlow("planning")}}>
             Planning
           </button>
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="design") handlePhaseFlow("design")}}>
             Design
           </button>
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="implementation") handlePhaseFlow("implementation")}}>
             Implementation
           </button>
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="testing") handlePhaseFlow("testing")}}>
             Testing
           </button>
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="deployment") handlePhaseFlow("deployment")}}>
             Deployment
           </button>
-          <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+          <button className="xy-theme__button" onClick={() =>{ if(phase!=="maintenance") handlePhaseFlow("maintenance")}}>
             Maintenance
           </button>
         </div>

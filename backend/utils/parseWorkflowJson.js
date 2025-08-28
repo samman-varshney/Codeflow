@@ -24,7 +24,8 @@ module.exports = (jsonObject) => {
             id: generateId(),
             data: { label: key },
             position: { x: 0, y: 0 },
-            type: 'phase'
+            type: 'phase',
+            phase: key
         };
         nodes.push(phase);
         edges.push({ id: generateId(), source: workflowNode.id, target: phase.id, ...defaultEdgeOptions});
@@ -34,10 +35,11 @@ module.exports = (jsonObject) => {
                 id: generateId(),
                 data: { ...workflow[key][stage] },
                 position: { x: 0, y: 0 },
+                phase: key,
                 ...defaultNodeOptions
             };
             nodes.push(stageNode);
-            edges.push({ id: generateId(), source: prevId, target: stageNode.id, ...defaultEdgeOptions});
+            edges.push({ id: generateId(), source: prevId, target: stageNode.id, phase: key, ...defaultEdgeOptions});
             prevId = stageNode.id;
         }
     });
