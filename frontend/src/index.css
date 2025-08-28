@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+
+html, body {
+  
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.hover-float:hover {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .hover-float:hover {
+    animation: none;
+    transform: translateY(-2px);
+  }
+}
