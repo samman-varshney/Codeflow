@@ -1,5 +1,13 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+
+const posMap = {
+  top: Position.Top,
+  bottom: Position.Bottom,
+  left: Position.Left,
+  right: Position.Right,
+};
+
 import { 
   Calendar,         // Planning
   Palette,          // Design
@@ -11,6 +19,8 @@ import {
 
 function PhaseNode({ data }) {
   // Function to get the appropriate icon for each phase
+  const computedTarget = (data && data.__computedTargetPosition) || 'top';
+  const computedSource = (data && data.__computedSourcePosition) || 'bottom';
   const getPhaseIcon = (phaseName) => {
     const phase = phaseName.toLowerCase();
     
@@ -91,45 +101,26 @@ function PhaseNode({ data }) {
 
       {/* Handles - larger and more prominent for parent nodes */}
       <Handle
-        type="target"
-        position={Position.Top}
-        className="w-4 h-4"
-        style={{ 
-          backgroundColor: iconColor,
-          border: '2px solid #0c0c0c',
-          boxShadow: `0 0 8px ${iconColor}80` // 80 is hex for 50% opacity
-        }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-4 h-4"
-        style={{ 
-          backgroundColor: iconColor,
-          border: '2px solid #0c0c0c',
-          boxShadow: `0 0 8px ${iconColor}80`
-        }}
-      />
-      <Handle
-        type="source"
-        position={Position.Left}
-        className="w-4 h-4"
-        style={{ 
-          backgroundColor: iconColor,
-          border: '2px solid #0c0c0c',
-          boxShadow: `0 0 8px ${iconColor}80`
-        }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="w-4 h-4"
-        style={{ 
-          backgroundColor: iconColor,
-          border: '2px solid #0c0c0c',
-          boxShadow: `0 0 8px ${iconColor}80`
-        }}
-      />
+  type="target"
+  position={ posMap[computedTarget] }
+  id="target"
+  style={{
+    backgroundColor: iconColor,
+    border: '2px solid #0c0c0c',
+    boxShadow: `0 0 8px ${iconColor}80`
+  }}
+/>
+
+<Handle
+  type="source"
+  position={ posMap[computedSource] }
+  id="source"
+  style={{
+    backgroundColor: iconColor,
+    border: '2px solid #0c0c0c',
+    boxShadow: `0 0 8px ${iconColor}80`
+  }}
+/>
     </div>
   );
 }

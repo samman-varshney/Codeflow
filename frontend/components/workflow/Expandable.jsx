@@ -1,9 +1,18 @@
 import React, { useState, useCallback } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
+
+const posMap = {
+  top: Position.Top,
+  bottom: Position.Bottom,
+  left: Position.Left,
+  right: Position.Right,
+};
+
 const ExpandableNode = ({ data }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+  const computedTarget = (data && data.__computedTargetPosition) || 'top';
+const computedSource = (data && data.__computedSourcePosition) || 'bottom';
   const toggleExpand = useCallback(() => {
     setIsExpanded(!isExpanded);
   }, [isExpanded]);
@@ -58,23 +67,26 @@ const ExpandableNode = ({ data }) => {
         }}
         onClick={toggleExpand}
       >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3"
-          style={{ backgroundColor: '#cc6be4' }}
-        />
+        
         
         <div className="text-sm font-medium truncate px-2 text-[#dededf]">
           {data.label || 'Unnamed Stage'}
         </div>
-        
         <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3"
-          style={{ backgroundColor: '#cc6be4' }}
-        />
+  type="target"
+  position={ posMap[computedTarget] }
+  className="w-3 h-3"
+  style={{ backgroundColor: '#cc6be4' }}
+/>
+
+{/* node label/display */}
+
+<Handle
+  type="source"
+  position={ posMap[computedSource] }
+  className="w-3 h-3"
+  style={{ backgroundColor: '#cc6be4' }}
+/>
       </div>
 
       {/* Expandable detail panel */}

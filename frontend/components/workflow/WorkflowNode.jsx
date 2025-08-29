@@ -1,8 +1,19 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+
+
+const posMap = {
+  top: Position.Top,
+  bottom: Position.Bottom,
+  left: Position.Left,
+  right: Position.Right,
+};
+
 import { Workflow } from "lucide-react";
 
 function WorkflowNode({ data }) {
+  const computedTarget = (data && data.__computedTargetPosition) || 'top';
+const computedSource = (data && data.__computedSourcePosition) || 'bottom';
   return (
     <div 
       className="relative rounded-xl p-5 flex flex-col items-center justify-center transition-all duration-300 hover:scale-102"
@@ -73,17 +84,27 @@ function WorkflowNode({ data }) {
 
       {/* Handles - positioned for connecting to phase nodes */}
 
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-5 h-5"
-        id="main-output"
-        style={{ 
-          backgroundColor: '#e40b7f',
-          border: '2px solid #0c0c0c',
-          boxShadow: '0 0 12px rgba(228, 11, 127, 0.9)'
-        }}
-      />
+    <Handle
+  type="target"
+  position={ posMap[computedTarget] }
+  id="target"
+  style={{ 
+    backgroundColor: '#e40b7f',
+    border: '2px solid #0c0c0c',
+    boxShadow: '0 0 12px rgba(228, 11, 127, 0.9)'
+  }}
+/>
+
+<Handle
+  type="source"
+  position={ posMap[computedSource] }
+  id="source"
+  style={{ 
+    backgroundColor: '#e40b7f',
+    border: '2px solid #0c0c0c',
+    boxShadow: '0 0 12px rgba(228, 11, 127, 0.9)'
+  }}
+/>
       
       {/* Additional handles for connecting multiple phases */}
 
