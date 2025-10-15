@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ReactFlow } from "@xyflow/react";
 import AutoFlow from "../components/workflow/Autoflow";
+import TechStack from "../components/TechStack";
+import BashCommand from "../components/BashCommands";
 
 export default function ProjectPrompt({ onGenerate }) {
   const [selected, setSelected] = useState([]);
@@ -29,32 +31,32 @@ export default function ProjectPrompt({ onGenerate }) {
     );
   };
 
-
   const handleGenerate = async () => {
-  if (idea) {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/generate/workflow`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userPrompt: idea }),
-        }
-      );
+    if (idea) {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/generate/workflow`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userPrompt: idea }),
+          }
+        );
 
-      const result = await response.json();
-      setResponseData(result);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
+        const result = await response.json();
+        console.log("Response Data:", result);
+        console.log("Keys:", Object.keys(result));
+        setResponseData(result);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-};
-
+  };
 
   const options = [
     {
@@ -152,7 +154,9 @@ export default function ProjectPrompt({ onGenerate }) {
                 onClick={handleGenerate}
                 disabled={!idea.trim()}
                 className={`generate-button w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 to-purple-400 shadow-[0_3px_12px_rgba(138,43,226,0.4)] transition-all duration-300 ${
-                  !idea.trim() ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(138,43,226,0.6)]"
+                  !idea.trim()
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(138,43,226,0.6)]"
                 }`}
               >
                 {loading ? "Generating..." : "Generate Plan"}
@@ -161,12 +165,30 @@ export default function ProjectPrompt({ onGenerate }) {
           </div>
         </div>
       </div>
-      {/* Display response data for debugging */}
+
+      {/* ✅ Display response data (AutoFlow + TechStack + BashCommand) */}
       {responseData && (
-        <div style={{ width: "100vw", height: "100vh" }}>
-          <AutoFlow initialEdges={responseData.edges} initialNodes={responseData.nodes} />
+        <div className="w-full px-4 py-10 space-y-10">
+          {responseData.nodes && responseData.edges && (
+            <div className="w-full h-[80vh]">
+              <AutoFlow
+                initialEdges={responseData.edges}
+                initialNodes={responseData.nodes}
+              />
+            </div>
+          )}
+
+          {responseData.techStack && (
+            <TechStack techStack={responseData.techStack} />
+          )}
+
+          {responseData.bashCommand && (
+            <BashCommand bashCommand={responseData.bashCommand} />
+          )} 
         </div>
       )}
+      
+      
     </div>
   );
 }
