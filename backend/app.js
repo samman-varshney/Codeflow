@@ -12,7 +12,7 @@ const{geminiModel} = require('./config/gemini')
 const { createWorkflow } = require('./controllers/workflowController');
 
 app.use(cors({
-  origin: 'https://codeflow-one.vercel.app',
+  origin: ['https://codeflow-one.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
