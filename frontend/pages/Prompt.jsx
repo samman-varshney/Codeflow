@@ -19,7 +19,6 @@ export default function ProjectPrompt({ onGenerate }) {
   const [locked, setLocked] = useState(false);
 
   const navigate = useNavigate();
-  const { isSignedIn } = useUser();
 
   const toggleOption = (opt) => {
     if (locked) return; // disable option changes after generation
@@ -32,13 +31,6 @@ export default function ProjectPrompt({ onGenerate }) {
   };
 
   const handleGenerate = async () => {
-    if (!isSignedIn) {
-      toast.error("Please login to continue.");
-      setTimeout(() => {
-        document.getElementById("hidden-clerk-login").click();
-      }, 3000);
-      return;
-    }
 
     if (selected.length === 0) {
       toast.error("Please select at least one option.");
@@ -93,10 +85,6 @@ export default function ProjectPrompt({ onGenerate }) {
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 relative min-h-screen px-3 sm:px-6 lg:px-8 py-6 bg-[#111] text-gray-200">
-
-      <SignInButton redirectUrl="/prompt">
-        <button id="hidden-clerk-login" style={{ display: "none" }}></button>
-      </SignInButton>
 
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px] sm:bg-[size:40px_40px]" />
