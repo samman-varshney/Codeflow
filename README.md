@@ -42,8 +42,8 @@ By leveraging AI, CodeFlow provides a guided and structured approach to building
 ## Tech Stack
 
 ### Frontend
--React
--JavaScript
+- React
+- JavaScript
 
 ### Backend
 - Node.js  
