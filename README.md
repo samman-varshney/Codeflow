@@ -49,10 +49,6 @@ By leveraging AI, CodeFlow provides a guided and structured approach to building
 - Node.js  
 - Express.js  
 
-### Database
-- MongoDB (Mongoose)  
-- PostgreSQL (basic)  
-
 ### Tools & Libraries
 - Reactflow
 - dagre
