@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI }  = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 if (!GEMINI_API_KEY) {
@@ -8,7 +8,7 @@ if (!GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash", // or any other Gemini model
+  model: "gemini-3.8-flash", // or any other Gemini model
 });
 
 module.exports.geminiModel = geminiModel;

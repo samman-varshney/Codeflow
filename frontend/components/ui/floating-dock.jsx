@@ -48,6 +48,7 @@ const FloatingNavbarMobile = ({ items, visible }) => {
                 <motion.a
                   key={item.title}
                   href={item.href}
+                  onClick={item.onClick}
                   className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 shadow-lg hover:scale-110 transition-transform"
                   whileHover={{ scale: 1.2 }}
                 >
@@ -93,7 +94,7 @@ const FloatingNavbarDesktop = ({ items, visible }) => {
   );
 };
 
-const NavbarIcon = ({ mouseX, title, icon, href }) => {
+const NavbarIcon = ({ mouseX, title, icon, href, onClick }) => {
   const ref = useRef(null);
   const [hovered, setHovered] = useState(false);
 
@@ -108,7 +109,7 @@ const NavbarIcon = ({ mouseX, title, icon, href }) => {
   const heightIcon = useSpring(useTransform(distance, [-150, 0, 150], [24, 40, 24]));
 
   return (
-    <a href={href} className="relative">
+    <a href={href} onClick={onClick} className="relative">
       <motion.div
         ref={ref}
         style={{ width, height }}

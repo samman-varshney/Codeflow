@@ -5,16 +5,18 @@ import { SparklesCore } from "../components/nurui/sparkles.jsx";
 import FeaturesSection from "../components/FeaturesSection.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
-import Prompt from "../pages/Prompt.jsx"
+import Prompt from "../pages/Prompt.jsx";
+import Result from "../pages/Result.jsx";
+import Login from "../pages/Login.jsx";
+import Signup from "../pages/Signup.jsx";
+import SavedWorkflows from "../pages/SavedWorkflows.jsx";
+import ProtectedRoute from "../components/auth/ProtectedRoute.jsx";
 import Contributors from "../components/Contributors.jsx";
 import Review from "../components/Review.jsx";
-import Github from "../components/GitHub.jsx";
-
 
 export default function App() {
   return (
     <Routes>
-      
       <Route
         path="/"
         element={
@@ -36,9 +38,8 @@ export default function App() {
               <ResearchHero />
               <FeaturesSection />
               <HowItWorks />
-              <Contributors/>
-              {/* <Github/> */}
-              <Review/>
+              <Contributors />
+              <Review />
             </div>
             <footer>
               <Footer />
@@ -47,8 +48,34 @@ export default function App() {
         }
       />
 
-      
-      <Route path="/prompt" element={<Prompt />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
+      {/* Protected Routes */}
+      <Route
+        path="/prompt"
+        element={
+          <ProtectedRoute>
+            <Prompt />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/result"
+        element={
+          <ProtectedRoute>
+            <Result />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saved"
+        element={
+          <ProtectedRoute>
+            <SavedWorkflows />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

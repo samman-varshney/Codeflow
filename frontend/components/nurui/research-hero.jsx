@@ -52,7 +52,9 @@ function LeftContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-wide uppercase text-gray-300"
-        style={{ transform: `translate(${calcParallax(60).x}px, ${calcParallax(60).y}px)` }}
+        style={{
+          transform: `translate(${calcParallax(60).x}px, ${calcParallax(60).y}px)`,
+        }}
       >
         <Sparkles className="h-3.5 w-3.5" />
         Built for beginners, designed for production
@@ -63,11 +65,14 @@ function LeftContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.1, delay: 0.1 }}
         className="mt-5 text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-white"
-        style={{ transform: `translate(${calcParallax(40).x}px, ${calcParallax(40).y}px)` }}
+        style={{
+          transform: `translate(${calcParallax(40).x}px, ${calcParallax(40).y}px)`,
+        }}
       >
         <Flip /> First.
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-          {" "}Ship Production-Ready
+          {" "}
+          Ship Production-Ready
         </span>
       </motion.h1>
 
@@ -112,9 +117,10 @@ function LeftContent() {
         <Button
           variant="outline"
           className="text-white border-purple-500 hover:bg-purple-500/20 cursor-pointer transition"
+          onClick={() => navigate("/saved")}
         >
           <Sparkles className="mr-2 h-5 w-5" />
-          Generate Sample Flowchart
+          View Saved Workflow
         </Button>
       </motion.div>
 
@@ -171,7 +177,7 @@ function SuperInteractiveRightSide() {
                 <InteractiveCosmicGlobe mouse={mouse} />
               )}
             </motion.div>
-          ) : null
+          ) : null,
         )}
       </AnimatePresence>
     </div>
